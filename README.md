@@ -2,7 +2,7 @@
 
 Pump Selection Toolkit, a comprehensive solution for selecting the optimal centrifugal pump. This toolkit is based on a database of mechanical and process data for centrifugal pumps purchased over the course of 25 years by one of the major EPC companies in MENA.
 
-One of the key features of the toolkit is multiple machine learning models that have been trained to automatically determine the API type (OH, BB, VS), the number of stages, the impeller diameter, and the efficiency of the pump based on head and capacity data.
+One of the key features of the toolkit is multiple machine learning models that have been trained to automatically determine the API type , the number of stages, the impeller diameter, and the efficiency of the pump based on head (H) and capacity (Q) data.
 
 It also includes separate modules for mechanical seal and material selection, ensuring that every aspect of the pump selection process is covered.
 
