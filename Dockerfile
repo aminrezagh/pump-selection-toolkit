@@ -26,4 +26,4 @@ RUN apt-get purge -y git && \
 EXPOSE 8501
 
 # The command to run the application
-CMD ["streamlit", "run", "01  🗺️ Dashboard.py"]
+CMD ["streamlit", "run", "01 🗺️ Dashboard.py"]
