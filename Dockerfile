@@ -5,8 +5,8 @@ WORKDIR /app
 
 # Clone the repository and install the dependencies
 RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -SL https://github.com/aminrezagh/pump-selection-toolkit.git | tar xz --strip-components=1 && \
+    apt-get install -y git && \
+    git clone https://github.com/aminrezagh/pump-selection-toolkit.git . && \
     pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Copy application code
@@ -18,7 +18,7 @@ COPY . .
 FROM source as final
 
 # Remove unnecessary files and directories
-RUN apt-get purge -y curl && \
+RUN apt-get purge -y git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
