@@ -1,5 +1,5 @@
 # Stage 1: Python dependencies
-FROM python:3.9-slim as base
+FROM python:3.9-slim-bullseye as base
 
 WORKDIR /app
 
