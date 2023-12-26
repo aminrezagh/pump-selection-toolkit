@@ -1,6 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
+import subprocess
 
 CSV_FILE_PATH = "db/db-v1.5.csv"
 
@@ -21,6 +22,9 @@ page_css_style = """
 st.markdown(page_css_style, unsafe_allow_html=True)
 
 df = pd.read_csv(CSV_FILE_PATH)
+
+server_command = ["py", "-m", "http.server", "8000"]
+server_process = subprocess.Popen(server_command)
 
 proj = st.multiselect("Project", set(df["Project"]), key="proj_sel")
 

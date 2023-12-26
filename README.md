@@ -26,4 +26,4 @@ The following dependencies are required to run this toolkit:
 
 ## License
 
-This repository is licensed under the MIT License. 
+This repository is licensed under the MIT License.

@@ -88,7 +88,7 @@ string_cols = ["Service", "Liquid"]
 
 cols = st.multiselect("Data Columns", df[searchable_cols].columns.to_list())
 
-search_str = []
+search_dict = {}
 # initializes options list for categorical data
 opts = []
 # initializes range list for numerical data
@@ -97,7 +97,7 @@ rngs = []
 if cols:
     for col, val in df[cols].items():
         if col in string_cols:
-            search_str += [st.text_input(col, key=col)]
+            search_dict[col] = st.text_input(col, key=col)
 
         # checks whether selected data-type is categorical
         elif df[col].dtype == "O":
@@ -149,9 +149,9 @@ if cols:
                 # filters data based on combined conditions
                 df[diff_cols].select_dtypes(include=["object"]).isin(opts).all(axis=1)
                 & pd.DataFrame(bool_list).T.all(axis=1)
-                & df[inter_cols]
-                .apply(lambda r: r.str.contains("|".join(search_str), case=False))
-                .all(axis=1)
+                & pd.DataFrame(
+                    [df[c].str.contains(v, case=False) for c, v in search_dict.items()]
+                ).T.all(axis=1)
             ],
             height=450,
             theme="streamlit",
@@ -160,14 +160,14 @@ if cols:
             allow_unsafe_jscode=True,
         )
 
-    elif opts or search_str:
+    elif opts or search_dict:
         AgGrid(
             df[
                 # filters data based on combined conditions
                 df[diff_cols].select_dtypes(include=["object"]).isin(opts).all(axis=1)
-                & df[inter_cols]
-                .apply(lambda r: r.str.contains("|".join(search_str), case=False))
-                .all(axis=1)
+                & pd.DataFrame(
+                    [df[c].str.contains(v, case=False) for c, v in search_dict.items()]
+                ).T.all(axis=1)
             ],
             height=450,
             theme="streamlit",
