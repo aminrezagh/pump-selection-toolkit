@@ -3,10 +3,8 @@ FROM python:3.9-alpine as base
 
 WORKDIR /app
 
-# Install git
-RUN apk update && apk add --no-cache git
+RUN apt-get update && apt-get install -y git
 
-# Clone the repository
 RUN git clone https://github.com/aminrezagh/pump-selection-toolkit.git .
 
 COPY requirements.txt .
