@@ -19,6 +19,10 @@ PAGE_STYLE = """
 st.set_page_config(layout="centered", page_title="Dashboard")
 st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
+# Get the local network IP address
+if "network_ip" not in st.session_state:
+    st.session_state["network_ip"] = get_network_ip()
+
 df = pd.read_csv(CSV_FILE_PATH)
 
 proj = st.multiselect("Project", set(df["Project"]), key="proj_sel")
@@ -65,7 +69,3 @@ else:
         color_discrete_sequence=px.colors.qualitative.Prism,
     )
     fig_proj
-
-# Get the local network IP address
-if "network_ip" not in st.session_state:
-    st.session_state["network_ip"] = get_network_ip()

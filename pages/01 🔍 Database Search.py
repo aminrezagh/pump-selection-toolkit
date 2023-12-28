@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
 CSV_FILE_PATH = "db/db-v1.5.csv"
 PAGE_STYLE = """
@@ -31,43 +30,11 @@ st.set_page_config(layout="wide", page_title="Search")
 st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
 df = pd.read_csv(CSV_FILE_PATH)
-
-# Sets tha AgGrid parameters
-
-CELL_RENDERER = JsCode(
-    """
-        class UrlCellRenderer {
-            init(params) {
-                if (params.value) {
-                    this.eGui = document.createElement('a');
-                    this.eGui.innerText = 'Open GAD';
-                    this.eGui.setAttribute('href', 'http://localhost:8000/' + params.value);
-                    this.eGui.setAttribute('style', "text-decoration:none");
-                    this.eGui.setAttribute('target', "_blank");
-                }
-            }
-            getGui() {
-                return this.eGui;
-            }
-        }
-    """
+df["GA"] = f"http://{st.session_state['network_ip']}:8000/" + df["GA"].str.replace(
+    "\\", "/"
 )
 
-# Define custom CSS for AgGrid
-custom_css = {
-    "#gridToolBar": {"padding-bottom": "0px !important"},
-}
-
-gb = GridOptionsBuilder.from_dataframe(df)
-gb.configure_selection(selection_mode="multiple")
-gb.configure_default_column(filterable=False, editable=False)
-gb.configure_column(
-    "GA",
-    cellRenderer=CELL_RENDERER,
-)
-gbo = gb.build()
-
-COL_CONFIG = {"GA": st.column_config.LinkColumn("GA")}
+COL_CONFIG = {"GA": st.column_config.LinkColumn()}
 
 searchable_cols = [
     "Service",
@@ -167,36 +134,3 @@ if cols:
         column_config=COL_CONFIG,
         hide_index=True,
     )
-
-    # if rngs:
-    #     AgGrid(
-    #         df[
-    #             # filters data based on combined conditions
-    #             df[diff_cols].select_dtypes(include=["object"]).isin(opts).all(axis=1)
-    #             & pd.DataFrame(bool_list).T.all(axis=1)
-    #             & pd.DataFrame(
-    #                 [df[c].str.contains(v, case=False) for c, v in search_dict.items()]
-    #             ).T.all(axis=1)
-    #         ],
-    #         height=450,
-    #         theme="streamlit",
-    #         gridOptions=gbo,
-    #         custom_css=custom_css,
-    #         allow_unsafe_jscode=True,
-    #     )
-
-    # elif opts or search_dict:
-    #     AgGrid(
-    #         df[
-    #             # filters data based on combined conditions
-    #             df[diff_cols].select_dtypes(include=["object"]).isin(opts).all(axis=1)
-    #             & pd.DataFrame(
-    #                 [df[c].str.contains(v, case=False) for c, v in search_dict.items()]
-    #             ).T.all(axis=1)
-    #         ],
-    #         height=450,
-    #         theme="streamlit",
-    #         gridOptions=gbo,
-    #         custom_css=custom_css,
-    #         allow_unsafe_jscode=True,
-    #     )
