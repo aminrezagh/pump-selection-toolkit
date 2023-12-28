@@ -3,10 +3,7 @@ import plotly.express as px
 import pandas as pd
 
 CSV_FILE_PATH = "db/db-v1.5.csv"
-
-st.set_page_config(layout="centered", page_title="Seal and Material")
-
-page_css_style = """
+PAGE_STYLE = """
             <style>
             footer {visibility: hidden;}
             #MainMenu {visibility: hidden;}
@@ -18,7 +15,8 @@ page_css_style = """
             </style>
             """
 
-st.markdown(page_css_style, unsafe_allow_html=True)
+st.set_page_config(layout="centered", page_title="Seal and Material")
+st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
 df = pd.read_csv(CSV_FILE_PATH)
 

@@ -4,10 +4,7 @@ import streamlit as st
 from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
 CSV_FILE_PATH = "db/db-v1.5.csv"
-
-st.set_page_config(layout="wide", page_title="Search")
-
-page_css_style = """
+PAGE_STYLE = """
             <style>
             footer {visibility: hidden;}
             #MainMenu {visibility: hidden;}
@@ -19,7 +16,19 @@ page_css_style = """
             </style>
             """
 
-st.markdown(page_css_style, unsafe_allow_html=True)
+
+def generate_scope(conditions):
+    result = []
+
+    for var, expr in conditions.items():
+        if eval(var):
+            result.append(expr)
+
+    return " & ".join(result)
+
+
+st.set_page_config(layout="wide", page_title="Search")
+st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
 df = pd.read_csv(CSV_FILE_PATH)
 
@@ -57,6 +66,8 @@ gb.configure_column(
     cellRenderer=CELL_RENDERER,
 )
 gbo = gb.build()
+
+COL_CONFIG = {"GA": st.column_config.LinkColumn("GA")}
 
 searchable_cols = [
     "Service",
@@ -141,37 +152,51 @@ if cols:
 
     # defines two intermediate variables for column selection
     diff_cols = list(set(cols).difference(set(string_cols)))
-    inter_cols = list(set(cols).intersection(set(string_cols)))
 
-    if rngs:
-        AgGrid(
-            df[
-                # filters data based on combined conditions
-                df[diff_cols].select_dtypes(include=["object"]).isin(opts).all(axis=1)
-                & pd.DataFrame(bool_list).T.all(axis=1)
-                & pd.DataFrame(
-                    [df[c].str.contains(v, case=False) for c, v in search_dict.items()]
-                ).T.all(axis=1)
-            ],
-            height=450,
-            theme="streamlit",
-            gridOptions=gbo,
-            custom_css=custom_css,
-            allow_unsafe_jscode=True,
-        )
+    CONDITIONS = {
+        "rngs": "pd.DataFrame(bool_list).T.all(axis=1)",
+        "search_dict": "pd.DataFrame([df[c].str.contains(v, case=False) for c, v in search_dict.items()]).T.all(axis=1)",
+        "True": "df[diff_cols].select_dtypes(include=['object']).isin(opts).all(axis=1)",
+    }
 
-    elif opts or search_dict:
-        AgGrid(
-            df[
-                # filters data based on combined conditions
-                df[diff_cols].select_dtypes(include=["object"]).isin(opts).all(axis=1)
-                & pd.DataFrame(
-                    [df[c].str.contains(v, case=False) for c, v in search_dict.items()]
-                ).T.all(axis=1)
-            ],
-            height=450,
-            theme="streamlit",
-            gridOptions=gbo,
-            custom_css=custom_css,
-            allow_unsafe_jscode=True,
-        )
+    st.dataframe(
+        df[
+            # filters data based on combined conditions
+            eval(generate_scope(CONDITIONS))
+        ],
+        column_config=COL_CONFIG,
+        hide_index=True,
+    )
+
+    # if rngs:
+    #     AgGrid(
+    #         df[
+    #             # filters data based on combined conditions
+    #             df[diff_cols].select_dtypes(include=["object"]).isin(opts).all(axis=1)
+    #             & pd.DataFrame(bool_list).T.all(axis=1)
+    #             & pd.DataFrame(
+    #                 [df[c].str.contains(v, case=False) for c, v in search_dict.items()]
+    #             ).T.all(axis=1)
+    #         ],
+    #         height=450,
+    #         theme="streamlit",
+    #         gridOptions=gbo,
+    #         custom_css=custom_css,
+    #         allow_unsafe_jscode=True,
+    #     )
+
+    # elif opts or search_dict:
+    #     AgGrid(
+    #         df[
+    #             # filters data based on combined conditions
+    #             df[diff_cols].select_dtypes(include=["object"]).isin(opts).all(axis=1)
+    #             & pd.DataFrame(
+    #                 [df[c].str.contains(v, case=False) for c, v in search_dict.items()]
+    #             ).T.all(axis=1)
+    #         ],
+    #         height=450,
+    #         theme="streamlit",
+    #         gridOptions=gbo,
+    #         custom_css=custom_css,
+    #         allow_unsafe_jscode=True,
+    #     )

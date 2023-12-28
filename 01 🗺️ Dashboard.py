@@ -1,14 +1,10 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-import subprocess
-import sys
+from utils.get_ip import get_network_ip
 
 CSV_FILE_PATH = "db/db-v1.5.csv"
-
-st.set_page_config(layout="centered", page_title="Dashboard")
-
-page_css_style = """
+PAGE_STYLE = """
             <style>
             footer {visibility: hidden;}
             #MainMenu {visibility: hidden;}
@@ -20,12 +16,10 @@ page_css_style = """
             </style>
             """
 
-st.markdown(page_css_style, unsafe_allow_html=True)
+st.set_page_config(layout="centered", page_title="Dashboard")
+st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
 df = pd.read_csv(CSV_FILE_PATH)
-
-server_command = [sys.executable, "-m", "http.server", "8000"]
-server_process = subprocess.Popen(server_command)
 
 proj = st.multiselect("Project", set(df["Project"]), key="proj_sel")
 
@@ -64,10 +58,14 @@ if proj:
     fig_mat
 else:
     fig_proj = px.bar(
-        df.groupby("Project").sum().reset_index(),
+        df.groupby("Project").sum(numeric_only=False).reset_index(),
         x="Project",
         y="Qty",
         labels={"Qty": "Quantity (No. of tags)"},
         color_discrete_sequence=px.colors.qualitative.Prism,
     )
     fig_proj
+
+# Get the local network IP address
+if "network_ip" not in st.session_state:
+    st.session_state["network_ip"] = get_network_ip()

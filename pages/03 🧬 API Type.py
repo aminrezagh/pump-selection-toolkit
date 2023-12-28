@@ -1,11 +1,7 @@
-import numpy as np
-import pandas as pd
 import streamlit as st
-from joblib import dump, load
+from joblib import load
 
-st.set_page_config(layout="centered", page_title="API Type")
-
-page_css_style = """
+PAGE_STYLE = """
             <style>
             footer {visibility: hidden;}
             #MainMenu {visibility: hidden;}
@@ -17,7 +13,8 @@ page_css_style = """
             </style>
             """
 
-st.markdown(page_css_style, unsafe_allow_html=True)
+st.set_page_config(layout="centered", page_title="API Type")
+st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
 # Loads pre-trained models for API-Type and Number of poles
 type_model = load("models/type_model.joblib")
