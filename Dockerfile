@@ -23,6 +23,9 @@ WORKDIR /app
 COPY --from=builder /app /app
 COPY --from=builder /usr/local /usr/local
 
+# Copy the supervisord config file into the container
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # Expose only the ports that are required
 EXPOSE 8501 8000
 
