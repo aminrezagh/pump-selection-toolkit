@@ -15,7 +15,7 @@ PAGE_STYLE = """
             </style>
             """
 
-st.set_page_config(layout="centered", page_title="Seal and Material")
+st.set_page_config(page_icon="🕶️", layout="centered", page_title="Seal and Material")
 st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
 df = pd.read_csv(CSV_FILE_PATH)
@@ -33,6 +33,7 @@ if liquid:
             color="Seal Plan",
             labels={"Max. T": "Maximum Temperature (°C)"},
             title="Seal Plans",
+            hover_data=["Tag", "Project", "Seal Plan", "Material"],
             color_discrete_sequence=px.colors.qualitative.Pastel,
         )
         fig_seal
@@ -45,6 +46,7 @@ if liquid:
             color="Material",
             labels={"Min. T": "Minimum Temperature (°C)"},
             title="Materials",
+            hover_data=["Tag", "Project", "Seal Plan", "Material"],
             color_discrete_sequence=px.colors.qualitative.Pastel,
         )
         fig_mat

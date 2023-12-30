@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from utils.get_ip import get_network_ip
+import socket
 
 CSV_FILE_PATH = "db/db-v1.5.csv"
 PAGE_STYLE = """
@@ -16,16 +16,40 @@ PAGE_STYLE = """
             </style>
             """
 
-st.set_page_config(layout="centered", page_title="Dashboard")
+
+def get_network_ip():
+    try:
+        host_ip = socket.gethostbyname("host.docker.internal")
+    except socket.gaierror:
+        host_ip = None
+    return host_ip
+
+
+st.set_page_config(page_icon="🗺️", layout="centered", page_title="Dashboard")
 st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
-# Get the local network IP address
+# Get the local network IP address from docker
 if "network_ip" not in st.session_state:
     st.session_state["network_ip"] = get_network_ip()
 
 df = pd.read_csv(CSV_FILE_PATH)
 
 proj = st.multiselect("Project", set(df["Project"]), key="proj_sel")
+
+with st.sidebar:
+    st.markdown(
+        f""" <h4 style='color:  #616D7E; font-family: "Segoe UI"; font-weight: normal'>
+                    ⚠️
+                    <br>
+                    <br>
+                    This app is accessible within the local network at the following address:
+                    <br>
+                    <br>
+                    http://{st.session_state['network_ip']}:8501
+                    </h4>
+                """,
+        unsafe_allow_html=True,
+    )
 
 if proj:
     # Donut chart for pump type
@@ -62,7 +86,10 @@ if proj:
     fig_mat
 else:
     fig_proj = px.bar(
-        df.groupby("Project").sum(numeric_only=False).reset_index(),
+        df.drop_duplicates(subset=["Project", "Tag"])
+        .groupby("Project")
+        .count()
+        .reset_index(),
         x="Project",
         y="Qty",
         labels={"Qty": "Quantity (No. of tags)"},

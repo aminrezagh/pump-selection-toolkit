@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
+import socket
 
 CSV_FILE_PATH = "db/db-v1.5.csv"
 PAGE_STYLE = """
@@ -26,8 +27,20 @@ def generate_scope(conditions):
     return " & ".join(result)
 
 
-st.set_page_config(layout="wide", page_title="Search")
+def get_network_ip():
+    try:
+        host_ip = socket.gethostbyname("host.docker.internal")
+    except socket.gaierror:
+        host_ip = None
+    return host_ip
+
+
+st.set_page_config(page_icon="🔍", layout="wide", page_title="Database Search")
 st.markdown(PAGE_STYLE, unsafe_allow_html=True)
+
+# Get the local network IP address
+if "network_ip" not in st.session_state:
+    st.session_state["network_ip"] = get_network_ip()
 
 df = pd.read_csv(CSV_FILE_PATH)
 df["GA"] = f"http://{st.session_state['network_ip']}:8000/" + df["GA"].str.replace(

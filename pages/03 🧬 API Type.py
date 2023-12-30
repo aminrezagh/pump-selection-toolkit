@@ -13,7 +13,7 @@ PAGE_STYLE = """
             </style>
             """
 
-st.set_page_config(layout="centered", page_title="API Type")
+st.set_page_config(page_icon="🧬", layout="centered", page_title="API Type")
 st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
 # Loads pre-trained models for API-Type and Number of poles

@@ -14,7 +14,9 @@ PAGE_STYLE = """
             </style>
             """
 
-st.set_page_config(layout="centered", page_title="Efficiency and Diameter")
+st.set_page_config(
+    page_icon="➗", layout="centered", page_title="Efficiency and Diameter"
+)
 st.markdown(PAGE_STYLE, unsafe_allow_html=True)
 
 # Loads pre-trained models for Efficiency, Diameter and Number of poles
