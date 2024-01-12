@@ -47,7 +47,7 @@ df["GA"] = f"http://{st.session_state['network_ip']}:8000/" + df["GA"].str.repla
     "\\", "/"
 )
 
-COL_CONFIG = {"GA": st.column_config.LinkColumn()}
+COL_CONFIG = {"GA": st.column_config.LinkColumn(display_text="Open GAD")}
 
 searchable_cols = [
     "Service",
