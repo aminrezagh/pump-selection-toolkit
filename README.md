@@ -11,8 +11,7 @@ It also includes separate modules for mechanical seal and material selection, en
 - Comprehensive database of mechanical data for more than 500 pump tags
 - Easy-to-use UI facilitates advanced search through more than 40 operational data
 - Mechanical Seal Plan and Material Class suggestions based on liquid type and operating temperature
-- Automatic API type selection from Q and H
-- Automatic estimation of impeller diameter and efficiency from Q and H
+- Automatic API type selection
 
 ## Requirements
 
